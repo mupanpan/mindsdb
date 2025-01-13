@@ -81,7 +81,11 @@ class MySQLHandler(DatabaseHandler):
             config['connection_timeout'] = 10
 
         ssl = self.connection_data.get('ssl')
-        if ssl is True:
+        ssl_disabled = self.connection_data.get('ssl_disabled', False)
+
+        if ssl_disabled:
+            config['ssl_disabled'] = True
+        elif ssl is True:
             ssl_ca = self.connection_data.get('ssl_ca')
             ssl_cert = self.connection_data.get('ssl_cert')
             ssl_key = self.connection_data.get('ssl_key')
@@ -92,6 +96,7 @@ class MySQLHandler(DatabaseHandler):
                 config["ssl_cert"] = ssl_cert
             if ssl_key is not None:
                 config["ssl_key"] = ssl_key
+
         if 'collation' not in config:
             config['collation'] = 'utf8mb4_general_ci'
         try:
