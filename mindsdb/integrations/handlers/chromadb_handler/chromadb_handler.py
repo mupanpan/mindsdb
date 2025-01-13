@@ -472,10 +472,13 @@ class ChromaDBHandler(VectorStoreHandler):
         """
         Get the list of collections in the ChromaDB database.
         """
-        collections = self._client.list_collections()
+        # Get collection names directly from list_collections
+        collection_names = self._client.list_collections()
+        
+        # Create a DataFrame with the collection names
         collections_name = pd.DataFrame(
             columns=["table_name"],
-            data=[collection.name for collection in collections],
+            data=[[name] for name in collection_names],  # Wrap each name in a list to match the expected format
         )
         return Response(resp_type=RESPONSE_TYPE.TABLE, data_frame=collections_name)
 
